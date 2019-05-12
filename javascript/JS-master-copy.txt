@@ -649,7 +649,7 @@ The syntax of call:
 func.call(obj, arg1, arg2,...)
 The first argument of call becomes this, other arguments arg1, arg2... become arguments.
 
-var john = { 
+var user = { 
   firstName: "John" 
 }
 
@@ -659,9 +659,9 @@ function print() {
 
 print() // undefined 
 
-print.call(john)  // "John"
+print.call(user)  // "John"
 
-var john = { 
+var user = { 
   firstName: "John",
   lastName: "Smith"
 }
@@ -671,14 +671,14 @@ function print(a, b) {
   return a + b;
 }
 
-print.call(john, 2, 3)  // "John Smith"
+print.call(user, 2, 3)  // "John Smith"
 
 The print.apply is same as print.call, but it accepts an array of arguments instead of list.
 
 The following two lines are same:
-print.call(john, 2, 3)
+print.call(user, 2, 3)
  
-print.apply(john, [2, 3])
+print.apply(user, [2, 3])
 
 Using call and apply methods we can call the function. Using bind() method we can create new function with the given context. bind() method returns the new function with supplied context.
 
@@ -686,11 +686,11 @@ Using call and apply methods we can call the function. Using bind() method we ca
 var printName = print; 
 
 // Binding john to print and assigning print to printName variable
-var printName = print.bind(john); 
+var printName = print.bind(user); 
 printName(2, 3); // John Smith
 
 Also, we can pass parameters in bind method.
-var printName = print.bind(john, 2, 3);
+var printName = print.bind(user, 2, 3);
 printName(); // John Smith
 
 OOPS:
@@ -811,18 +811,21 @@ document.body.lastChild
 dir - method
 ------------
 dir() is a chrome console method to expand and see the list of properties available on a DOM element.
+
+<div id="logo">div for logo</div>
 var logo = document.getElementById('logo');
+console.log(logo);
+
 dir(logo);
 
 document.getElementById:
 ------------------------
-<body>
-  <div id="info">Info</div>
-  <script>
-    var div = document.getElementById('info')
-    console.log( div.innerHTML )
-  </script>
-</body>
+<div id="info">Info</div>
+<script>
+  var div = document.getElementById('info')
+  console.log( div.innerHTML )
+</script>
+
 
 getElementsByTagName
 --------------------
@@ -842,11 +845,11 @@ getElementsByTagName
       </label>
     </td>
   </tr>
-
 </table>
 
 <script>
-var elements = document.getElementsByTagName('input')
+var elements = document.getElementsByTagName('input');
+  console.log(elements);
   for(var i=0; i<elements.length; i++) {
     var input = elements[i]  
     console.log(input.value+': '+input.checked)
@@ -858,12 +861,33 @@ document.getElementsByClassName
 <div class="abc def test">some text1</div>
 <div class="abc">some text2</div>
 <script>
-console.log( document.getElementsByClassName('abc')[0].innerHTML )
+console.log( document.getElementsByClassName('abc') )
 </script>
 
 getElementsByName
 ------------------
-var elements = document.getElementsByName('age')
+<table id="myTable">
+  <tr>
+    <td>Your age:</td>
+
+    <td>
+      <label>
+        <input type="radio" name="age" value="young" checked/> under 18
+      </label>
+      <label>
+        <input type="radio" name="age" value="mature"/> from 18 to 50
+      </label>
+      <label>
+        <input type="radio" name="age" value="senior"/> older than 60
+      </label>
+    </td>
+  </tr>
+</table>
+
+<script>
+  var elements = document.getElementsByName('age');
+  console.log(elements);
+</script>
 
 document.querySelector, querySelectorAll:
 -----------------------------------------
@@ -883,6 +907,10 @@ The methods querySelector and querySelectorAll allow to select elements by CSS3 
     console.log(elements[i].innerHTML )
   }
 </script>
+
+// document.querySelector - returns the first matched element.
+var elem = document.querySelector('ul');
+console.log(elem);
 
 Difference b/w element attribute and element property
 -----------------------------------------------------
