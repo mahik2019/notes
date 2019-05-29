@@ -10,12 +10,10 @@ tsc stands for "TypeScript Compiler".
 
 tsc helloworld.ts => helloworld.ts compile to helloworld.js
 
-function Person() {
-    this.name = 'John Doe';
-    this.age = 25;
+class Person {
+    name = 'John Doe';
+    age = 25;
 }
-
-let personObj = new Person();
 
 In .ts files we can write valid JavaScript. All valid JavaScript statements are valid TypeScript statements.
 
@@ -127,7 +125,7 @@ enum Direction {
     Up = "UP",
     Down = "DOWN",
     Left = "LEFT",
-    Right = "RIGHT",
+    Right = "RIGHT"
 } // For string enums we need to initialize all the values.
 
 enum BooleanLikeHeterogeneousEnum {
@@ -150,7 +148,7 @@ list[1] = 100;
 
 Void:
 -----
-'void' is a datatype opposite to 'any'. 'void' is used to represent the absence of having any type.
+'void' is used to represent the absence of having any type.
 
 function warnUser(): void {
     alert("This is my warning message");
@@ -178,9 +176,9 @@ tsc --strictNullChecks temp.ts
 
 strictNullChecks is encouraged by TypeScript. As, it can avoid many common errors.
 
-While using strictNullChecks, if we want to accept 'string' or 'undefined' or 'null' for a variable, we can use union datatypes string|undefined|null.
+While using strictNullChecks, if we want to accept 'number' or 'undefined' or 'null' for a variable, we can use union datatypes number|undefined|null.
 
-var str: string|undefined|null;
+var str: number|undefined|null;
 
 Never:
 ------
@@ -197,8 +195,6 @@ function infiniteLoop(): never {
 
 Type assertions:
 ----------------
-Type assertions are a way to tell the compiler “trust me, I know what I’m doing.”
-
 A type assertion is like a type cast in other languages.
 
 Two syntaxes available for type assertion:
@@ -214,7 +210,7 @@ let strLength: number = (someValue as string).length;
 
 Union Types:
 ------------
-function padLeft(value: string, padding: any) {
+function paddingLeft(padding: any) {
     if (typeof padding === "number") {
         // Do something and return
     }
@@ -225,11 +221,11 @@ function padLeft(value: string, padding: any) {
 }
 
 As per the above function, padding should be string or number. 
-padLeft('right', true); // TSC can't find error on calling with 'true'.
+paddingLeft(true); // TSC can't find error on calling with 'true'.
 
 If we use union, we can restrict to string | number.
 
-function padLeft(value: string, padding: string | number) {
+function paddingLeft(padding: string | number) {
     if (typeof padding === "number") {
         // Do something and return
     }
@@ -238,7 +234,7 @@ function padLeft(value: string, padding: string | number) {
     }
     throw new Error(`Expected string or number, got '${padding}'.`);
 }
-padLeft('right', true); // TSC will return error.
+paddingLeft(true); // TSC will return error.
 
 Conclusion of Datatypes:
 ------------------------ 
@@ -269,44 +265,11 @@ console.log(b);
 
 '?' represents the optional value / parameter. If we don't specify '?' above, we will get error in compilation.
 
-// Destructuring in functions
-function f({ a, b=1000 }:{ a: string, b?: number } = { a: "test" }): void {
-    console.log(a); // test
-    console.log(b); // 1000
-}
-f();
-
-function f({ a, b=1000 }:{ a: string, b?: number } = { a: "test", b: 2000 }): void {
-    console.log(a); // test
-    console.log(b); //2000
-}
-f();
-
-function f({ a, b=1000 }:{ a: string, b?: number } = { a: "test", b: 2000 }): void {
-    console.log(a); // test2
-    console.log(b); // 3000
-}
-f({ a: "test2", b:3000 });
-
-Spread Operator:
-================
-let first = [1, 2];
-let second = [3, 4];
-let bothPlus = [0, ...first, ...second, 5];
-
-we can also spread objects:
-let defaults = { food: "spicy", price: "$$", ambiance: "noisy" };
-let search = { ...defaults, cuisine: "chinese" };
-
-// Food 'rich' will be overwritten by spicy.
-let defaults = { food: "spicy", price: "$$", ambiance: "noisy", add: function() {} };
-let search = { food: "rich", ...defaults };
-
 Interfaces:
 ===========
 We can understand interfaces as custom datatypes.
 
-Interfaces define the shape of a value. TypeScript always check whether the value is in specified format or not. This is called type-checking / duck typing / structural sub typing.
+Interfaces define the shape of a value. TypeScript always check whether the value is in specified format or not.
 
 function printLabel(labelledObj: { label: string }) {
     console.log(labelledObj.label);
@@ -316,6 +279,8 @@ let myObj = {size: 10, label: "Size 10 Object"};
 printLabel(myObj);
 
 Type checker checks for label in myObj. If it is not found, compiler will return error.
+
+We can specify the stucture of labelledObj param using interface like below.
 
 interface LabelledValue {
     label: string;
@@ -341,7 +306,12 @@ interface SquareConfig {
     width?: number;
 }
 
-function createSquare(config: SquareConfig): {color: string; area: number} {
+interface Square {
+    color: string; 
+    area: number
+}
+
+function createSquare(config: SquareConfig): Square {
     let newSquare = {color: "white", area: 100};
     if (config.color) {
         newSquare.color = config.color;
@@ -369,18 +339,18 @@ p1.x = 5; // error!
 
 TypeScript comes with a ReadonlyArray<T> type that is the same as Array<T> with all mutating methods removed, so you can make sure you don’t change your arrays after creation:
 
-let a: number[] = [1, 2, 3, 4];
+let a: Array<number> = [1, 2, 3, 4];
 let ro: ReadonlyArray<number> = a;
 ro[0] = 12; // error!
 ro.push(5); // error!
 ro.length = 100; // error!
 a = ro; // error! - can't assign ReadonlyArray to normal array. But, type assertion works.
 
-a = ro as number[];
+a = ro as Array<number>;
 
 readonly vs const:
 ------------------
-Variables use const whereas properties use readonly.
+Variables use const whereas object properties use readonly.
 const is for variables.
 readonly is for properties of objects.
 
@@ -392,7 +362,7 @@ interface SearchFunc {
     (source: string, subString: string): boolean;
 }
 
-let mySearch: SearchFunc = function(source: string, subString: string) {
+let mySearch: SearchFunc = function(source: string, subString: string): boolean {
     let result = source.search(subString);
     return result > -1;
 }
@@ -401,7 +371,7 @@ To describe a function type with an interface, we give the interface a call sign
 
 For function types to correctly type-check, the names of the parameters do not need to match. We can write the above example like this:
 
-let mySearch: SearchFunc = function(src: string, sub: string) {
+let mySearch: SearchFunc = function(src: string, sub: string): boolean {
     let result = src.search(sub);
     return result > -1;
 }
@@ -472,11 +442,16 @@ When an interface type extends a class type it inherits the members of the class
 Interfaces inherit even the private and protected members of a base class.
 
 class Control {
-    private state: any;
+    state: any;
 }
 
 interface SelectableControl extends Control {
     select(): void;
+}
+
+class SomeControl implements SelectableControl {
+    state: any = 'checked';
+    select(): void {}
 }
 
 Classes:
@@ -501,15 +476,15 @@ class Animal {
     }
 }
 
-class Dog extends Animal {
-    bark() {
-        console.log('Dog Barking');
+class Horse extends Animal {
+    run() {
+        console.log('Horse is running');
     }
 }
 
-const dog = new Dog();
-dog.bark();
-dog.move(10);
+const horse = new Horse();
+horse.run();
+horse.move(10);
 
 super:
 ------
@@ -529,7 +504,7 @@ class Horse extends Animal {
     }
 }
 
-let tom: Animal = new Horse("Tommy the Palomino");
+let tom: Horse = new Horse("Tommy the Palomino");
 tom.move(34);
 
 Public, private, and protected modifiers:
@@ -555,7 +530,8 @@ class Animal {
     constructor(theName: string) { this.name = theName; }
 }
 
-new Animal("Cat").name; // Error: 'name' is private;
+var animalObj = new Animal("Cat");
+animalObj.name; // Error: 'name' is private;
 
 protected:
 ----------
@@ -574,18 +550,18 @@ class Employee extends Person {
         this.department = department;
     }
 
-    protected getElevatorPitch() {
+    protected getEmpDetails() {
         return `Hello, my name is ${this.name} and I work in ${this.department}.`;
     }
 
     public someMethod(){
-        this.getElevatorPitch();
+        this.getEmpDetails();
         // Do something
     }
 }
 
 let emp = new Employee("Howard", "Sales");
-emp.getElevatorPitch(); // error
+emp.getEmpDetails(); // error
 emp.name; // error
 emp.someMethod();
 
@@ -624,7 +600,7 @@ We can use any modifier like public, private, protected, and readonly before par
 
 Accessors (getters/setters):
 ----------------------------
-let passcode = "secret passcode";
+let isLoggedIn = true;
 
 class Employee {
     private _fullName: string;
@@ -634,7 +610,7 @@ class Employee {
     }
 
     set fullName(newName: string) {
-        if (passcode && passcode == "secret passcode") {
+        if (isLoggedIn) {
             this._fullName = newName;
         } else {
             console.log("Error: Unauthorized update of employee!");
@@ -655,10 +631,8 @@ class Grid {
 
     constructor (public scale: number) { }
     
-    calculateDistanceFromOrigin(point: {x: number; y: number;}) {
-        let xDist = (point.x - Grid.origin.x);
-        let yDist = (point.y - Grid.origin.y);
-        return Math.sqrt(xDist * xDist + yDist * yDist) / this.scale;
+    calculateDistance(point: {x: number; y: number;}) {
+        console.log('some functionality');
     }
 }
 
@@ -746,6 +720,7 @@ TypeScript can figure out the return type by looking at the return statements, s
 function type:
 --------------
 let myAdd: (x: number, y: number) => number =  function(x: number, y: number): number { return x + y; };
+let myAdd: {(x: number, y: number): number} =  function(x: number, y: number): number { return x + y; };
 
 myAdd is a variable of type (x: number, y: number) => number. It should accept two numerical parameters and return numeric.
 
@@ -851,6 +826,19 @@ TypeScript can infer the type information 'T', if we don't send it while calling
 let colors: string[] = ['violet', 'indigo', 'blue', 'green'];
 let randomColor: number = randomElem(colors); // Removed <string>, but still generic works and we get error in compilation
 
+// Generic class
+class Greeter<T> {
+    greeting: T;
+    constructor(message: T) {
+        this.greeting = message;
+    }
+    greet() {
+        return this.greeting;
+    }
+}
+
+let greeter = new Greeter<string>("Hello, world");
+
 Type Inference:
 ===============
 Infer means conclude something from evidence and reasoning rather than from explicit statements.
@@ -912,8 +900,6 @@ Decorator is special kind of function which can be applied to class, method, pro
 
 Decorators are a stage 2 proposal for JavaScript and are available as an experimental feature of TypeScript.
 
-Simple comparision to understand: Person -> Apply School decorator -> Apply College decorator ->  Apply Company decorator -> Finally became an employee. Still he is a Person not Animal or Tree etc... In the whole process Person gets extended with more capabilities without changing the core characteristics of person. 
-
 To enable experimental support for decorators, you must enable the "experimentalDecorators" compiler option either on the command line or in your tsconfig.json
 
 tsc --target ES5 --experimentalDecorators
@@ -969,7 +955,6 @@ function sealed(constructor: Function) {
     Object.seal(constructor); // Object.seal prevent new properties been added.
     Object.seal(constructor.prototype);
 }
-
 
 Method Decorators:
 ------------------
@@ -1037,6 +1022,10 @@ class Greeter {
 
 HTML5 Web APIs in TS:
 =====================
+To define the shape of an object like user, we use interface IUser.
+
+To define the shape of a DOM object we use Web API interfaces.
+
 We can find list of all web api interfaces in below url.
 https://developer.mozilla.org/en-US/docs/Web/API
 
@@ -1046,7 +1035,7 @@ private x : HTMLInputElement;
 this.x = <HTMLInputElement>document.getElementById(xId);
 this.x = document.getElementById(xId) as HTMLInputElement;
 
-Below are few html interfaces we frequently use.
+Below are few html interfaces,
 - HTMLInputElement
 - HTMLSpanElement
 - HTMLDivElement
@@ -1057,6 +1046,8 @@ Below are few html interfaces we frequently use.
 
 How to use JavaScript libraries in TypeScript:
 ==============================================
+Ex: typings-exmpl folder
+
 We need to install typings file of JavaScript library to work.
 
 To install typings file for jQuery we need to run below.
@@ -1064,22 +1055,8 @@ npm install --save-dev @types/jquery
 
 After adding the typings file, include jquery in index.html file, then jQuery starts working.
 
-Need for typings file:
-----------------------
-// Example.js
-var result = displayMessage(message) {
-    alert(message);
-}
-
-With this file alone, my TypeScript code don't have any clue where this displayMessage function exists in. It don't know its name and it don't know its parameters. We can fix this by describing it in a definition file as such (Example.d.ts):
-
-// Example.d.ts
-declare function displayMessage(message: string);
-
-
 Confusing Syntaxes:
 ===================
-
 Array notation:
 ---------------
 let list: Array<number> = [1, 2, 3];
@@ -1090,14 +1067,15 @@ Type casting / assertions:
 let strLength: number = (<string>someValue).length;
 let strLength: number = (someValue as string).length;
 
-Generics:
----------
+Generics Syntaxes
+-----------------
 function identity<T>(arg: T): T {
     return arg;
 }
-let output = identity<string>("myString");
+let output = identity<string>("myString"); // Calling a generic function
 
-// Generic interface
+Generic function data type / shape
+----------------------------------
 function identity<T>(arg: T): T {
     return arg;
 }
@@ -1105,7 +1083,8 @@ function identity<T>(arg: T): T {
 let myIdentity: <T>(arg: T) => T = identity;
 let myIdentity: {<T>(arg: T): T} = identity; // Generic interface with call signature of an object literal type
 
-// Generic interface as function
+Generic function interface
+--------------------------
 interface GenericIdentityFn {
     <T>(arg: T): T;
 }
@@ -1116,7 +1095,8 @@ function identity<T>(arg: T): T {
 
 let myIdentity: GenericIdentityFn = identity;
 
-// Generic interface as function - another syntax
+Generic function interface - another syntax
+--------------------------
 interface GenericIdentityFn<T> {
     (arg: T): T;
 }
@@ -1127,22 +1107,8 @@ function identity<T>(arg: T): T {
 
 let myIdentity: GenericIdentityFn<number> = identity; 
 
-
-// Generic class
-class Greeter<T> {
-    greeting: T;
-    constructor(message: T) {
-        this.greeting = message;
-    }
-    greet() {
-        return this.greeting;
-    }
-}
-
-let greeter = new Greeter<string>("Hello, world");
-
-Generic Constraints:
---------------------
+Generic Constraints
+-------------------
 function loggingIdentity<T>(arg: T): T {
     console.log(arg.length);  // Error: T doesn't have .length
     return arg;

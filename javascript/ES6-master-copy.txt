@@ -9,7 +9,7 @@ Adding new features to "var" keyword will generate many backward compatability i
 Variable hoisting with var:
 ---------------------------
 var doWork = function(){
-	return x;
+  return x;
 } 
 
 doWork() // Return error. x is not defined
@@ -29,7 +29,7 @@ var doWork = function(flag){
         var x = 3; //This Variable will be hoisted
     }	
     return x;
-} 
+}
 
 doWork(false) // We should get error. But, we don't get because the variable x is hoisted to top of the function.
 
@@ -101,6 +101,7 @@ doWork();
         return x; 
     }
     doWork();
+    console.log(x);
 })();
 
 Summary of 'let' keyword:
@@ -122,8 +123,8 @@ one thing we have to note about constants is, If we try to re-assign(changing re
 
 const arr = [1,2];
 arr = [3,4]; // Return error
-arr[1] = 3; // Allowed
-arr[2] = 4; // Allowed
+arr[0] = 3; // Allowed
+arr[1] = 4; // Allowed
 
 const user = {
     name: 'John',
@@ -142,6 +143,7 @@ Scope of const also block level.
 		console.log(test);
     } 
     doWork();
+		console.log(test);
 })();
 
 Summary of 'const' keyword:
@@ -190,12 +192,7 @@ Tip to remember syntax: Simply copy object to the left side and replace values w
 
 If we want to use same key name, then we don't need to specify the variable name.
 
-let {firstName, lastName, social: {twitter}} = 
-    {
-        firstName: "John", 
-        lastName: "Smith", 
-        social: {twitter: "twId", fb: "fbId"}
-    };
+let {firstName, lastName, social: {twitter}} = {firstName: "John",lastName: "Smith",social: {twitter: "twId", fb: "fbId"}};
 console.log(firstName);
 console.log(lastName);
 console.log(twitter);
@@ -213,8 +210,6 @@ doWork(null); // passing null - name is 'null'
 null and undefined are not same in Javascript.
 undefined - existed but empty
 null - not existed
-
-If we intentially pass null to function then Default parameters consider that null value.
 
 let doWork = function(a = 1, b = 2, c = 3){
     console.log(a);
@@ -251,7 +246,7 @@ Spread operator:
 ================
 spread is negation to Rest.
 
-Rest operator take individual values and comnine them into an array. Spread operator take an array and split it into individual values.
+Rest operator take individual values and combine them into an array. Spread operator take an array and split it into individual values.
 
 Spread operator is part of the function calling statement or other.
 
@@ -289,7 +284,8 @@ Template literals starts and end with Backtic(`). ${x} replace the value of x in
 
 Substitute the values and Execute the expressions:
 let x=1,y=2;
-let template = `${x} add ${y} is ${x+y}`;
+let template = 'Addition of ' + x + ' and ' + y + ' is ' + (x+y)
+let template = `Addition of ${x} and ${y} is ${x+y}`;
 
 New lines don't break the code:
 let html = `<div>
@@ -305,12 +301,13 @@ Two benifits
 2. No binding of this. "this" is not bound in arrow functions.
     - Arrow functions don't contain this, prototype, arguments property.
 
-Syntax:
+1. shorter syntax
+
 var multiply = function(x, y){
     return x*y;
 };
 
-var multiply = (x, y) => {return x*y;};
+var multiply = (x, y) => {return x*y};
 
 The symbol '=>' is called FAT ARROW.
 
@@ -323,6 +320,8 @@ Parentheses are optional when only one parameter is present
 var strToArr = function(str){
     return str.split(" ");
 };
+
+strToArr('Hello Good Morning')
 
 var strToArr = str => str.split(" ");
 
@@ -343,48 +342,9 @@ var smartPhonePrices = smartPhones.map(smartPhone=>smartPhone.price);
 
 2. No binding of this. "this" is not bound in arrow functions.
 
-Every normal function define it's own this.
+Every regular function define it's own this.
 
-Different behaviors of this:
-----------------------------
-In Functions,
-function printThis(){
-    console.log(this);
-}
-// This referring to "window" object
-
-In methods,
-var person = {
-  firstName: "John",
-  lastName: "Doe"
-};
-
-person.print = printThis;
-person.print();
-// This referring to "person" object
-
-In a constructor,
-function Person(){
-    this.name = "John";
-    this.print = function(){
-        console.log(this);
-    }   
-}
-var person = new Person();
-person.print();
-
-Explicit this,
-
-we can explicitly set this of a function.
-function printThis(){
-    console.log(this);
-}
-
-printThis.call(person);
-printThis.apply(person);
-var personPrint = printThis.bind(person);
-
-In callbacks,
+For example in callbacks,
 
 function Person() {
   this.age = 0;
@@ -393,11 +353,11 @@ function Person() {
     this.age++;
     console.log(this.age);
   }, 1000);
-}
+} // Expected 1, 2, 3 ... Actual: NaN
 
 var p = new Person();
 
-Fix
+Conventional Fix:
 function Person() {
     var that = this;
     that.age = 0;
@@ -410,7 +370,7 @@ function Person() {
 
 var p = new Person();
 
-Arrow way:
+Fix with Arrow function:
 function Person(){
   this.age = 0;
 
@@ -427,7 +387,7 @@ An arrow function does not create its own this context.
 No binding of arguments
 
 function test(a, b){
-    console.log(arguments);
+  console.log(arguments);
 }
 test(2, 3);
 
@@ -446,12 +406,13 @@ Foo.prototype
 Returning object:
 -----------------
 var func = (a, b) => a+b;
+func(2, 3);
 
 var func = () => { foo: 1 }; // Gives undefined.
 
 var func = () => ({foo: 1});
 
-don't give line brasks before arrow
+don't give line brakes before arrow
 var func = ()
            => 1;
 
@@ -459,6 +420,8 @@ Classes:
 ========
 ES5:
 ----
+In ES5 we don't have the concept of classes. We use constructor functions as classes and prototype property for inheritance.
+
 Prototype is a hidden property of a function which helps in inheritance.
 
 Every JavaScript function has a prototype property and it is empty by default.
@@ -489,17 +452,16 @@ complexCalc.prototype = simpleObj;
 
 var complexObj = new complexCalc();
 
-
 ES6:
 ----
 class Employee {
-    doWork(){
-        return "done!";
-    }
+  doWork(){
+      return "done!";
+  }
 
-    getName(){
-        return "John";
-    }
+  getName(){
+      return "John";
+  }
 }
 
 let emp = new Employee();
@@ -508,17 +470,17 @@ emp.doWork();
 
 Employee.prototype.doWork(); //classes use prototype property in the background.
 
-Constructor: function in class which is invoked automatically while creating an object
+Constructor: Constructor is a function in class which is invoked automatically while creating an object.
 
 class Employee {
     constructor(name){
-        this.empName = name;
+      this.empName = name;
     }
     doWork(){
-        return "done!";
+      return "done!";
     }
     getName(){
-        return this.empName;
+      return this.empName;
     }
 }
 
@@ -531,39 +493,46 @@ getters and setters:
 Getter return the peoperty and setter set the property.
 
 class Employee {
-    constructor(name){
-        this.empName = name;
-    }
-	get name(){
-		return this.empName;
-    }
+  constructor(name){
+    this.empName = name;
+  }
+  
+  get name(){
+    return this.empName;
+  }
 }
 
 let emp = new Employee("john");
 emp.name
 
 class Employee {
-    constructor(name){
-        this.empName = name;
-    }
+  constructor(name){
+    this.empName = name;
+  }
+
 	get empName(){
 		return this.empName;
-    }
+  }
+
 	set empName(newName){
 		return this.empName = newName;
-    }
+  }
 } // It will create erros. We should not have same name for property and method
 
+let emp = new Employee("john");
+
 class Person {
-    constructor(name){
-        this._name = name;
-    }
-	get name(){
-		return this._name;
-    }
-	set name(newName){
-		return this._name = newName;
-    }
+  constructor(name){
+    this._name = name;
+  }
+  
+  get name(){
+    return this._name;
+  }
+
+  set name(newName){
+    return this._name = newName;
+  }
 }
 var person = new Person("John");
 person.name
@@ -572,22 +541,36 @@ person.name = "Doe"; //Setting property
 
 Inheretance:
 ------------
+class Person {
+  constructor(name){
+    this._name = name;
+  }
+  
+  get name(){
+    return this._name;
+  }
+
+  set name(newName){
+    return this._name = newName;
+  }
+}
+
 class Employee extends Person{
-    doWork(){
-        return `${this.name} is working`;
-    }
+  doWork(){
+    return `${this.name} is working`;
+  }
 }
 
 var emp = new Employee("John");
 
 // If we give empty constructor it throw error
 class Employee extends Person{
-    constructor(){
-        
-    }
-    doWork(){
-        return `${this.name} is working`;
-    }
+  constructor(){
+      
+  }
+  doWork(){
+    return `${this.name} is working`;
+  }
 }
 
 var emp = new Employee("John");
@@ -595,38 +578,41 @@ var emp = new Employee("John");
 Super:
 ------
 class Person {
-    constructor(name){
-        this._name = name;
-    }
+  constructor(name){
+    this._name = name;
+  }
 	get name(){
 		return this._name;
-    }
+  }
 	set name(newName){
 		return this._name = newName;
-    }
+  }
 }
 
 class Employee extends Person{    
-    // Without constructor works
-    // With empty constructor doesn't work
-    // With super(), without passsing name doesn't work
-    constructor(name){
-        super(name);
-    }    
-    doWork(){
-        return `${this.name} is working`;
-    }
+  // Without constructor works
+  // With empty constructor doesn't work
+  // With super(), without passsing name doesn't work
+  constructor(name){
+    super(name);
+  }
+
+  doWork(){
+    return `${this.name} is working`;
+  }
 }
+
+var emp = new Employee("John");
 
 // Employee with two parameters
 class Employee extends Person{
-    constructor(name, title){
-        super(name);
-        this.title = title;
-    }    
-    doWork(){
-        return `${this.name} is working`;
-    }
+  constructor(name, title){
+    super(name);
+    this.title = title;
+  }    
+  doWork(){
+    return `${this.name} is working`;
+  }
 }
 
 var emp = new Employee("John", 'Mr');
@@ -636,68 +622,70 @@ Super function invokes the parent class constructor and forward arguments from c
 Overrides:
 ----------
 class Person {
-    constructor(name){
-        this.name = name;
-    }
+  constructor(name){
+    this.name = name;
+  }
 	get name(){
 		return this._name;
-    }
+  }
 	set name(newName){
 		return this._name = newName;
-    }
-    doWork(){
-        console.log("person is working");
-        return `person is working`;
-    }
+  }
+  doWork(){
+    console.log("person is working");
+    return `person is working`;
+  }
 }
 
 class Employee extends Person{
-    constructor(name, title){
-        super(name);
-        this.title = title;
-    }    
-    doWork(){
-        super.doWork(); // If we call this.doWork(), It will go to infinite loop.
-        return `${this.name} is working`;
-    }
+  constructor(name, title){
+    super(name);
+    this.title = title;
+  }    
+  doWork(){
+    super.doWork(); // If we call this.doWork(), It will go to infinite loop.
+    return `${this.title} ${this.name} is working`;
+  }
 }
 
-var emp = new Employee("John");
+var emp = new Employee("John", "Mr");
 emp.doWork();
 
-Note: There is no concept of private, public or protected in ES6 classes.
------
+Note: There are no access modifiers like public, private and protected in ES6 classes. In TypeScript we have these access modifiers.
 
 Modules:
 ========
-Good authors divide their books into chapters and sections; good programmers divide their programs into modules.
+In JavaScript each file is a module and all objects defined in the file belong to that module.
 
-In JavaScript each file is a module and all objects defined in the file belong to that module. 
+Another defination: Any javascript file which contains export or import statement can be considered as a module. 
 
 Using 'export' keyword One module can export objects, constants, functions, classes etc..., another module can import using 'import' keywodrd.
 
-//------ lib.js ------
-export const sqrt = Math.sqrt;
-export function square(x) {
-    return x * x;
-}
-export function diag(x, y) {
-    return sqrt(square(x) + square(y));
-}
+//------ math-functions.js ------
+const sum = (a, b) => {
+    return a + b;
+};
 
-//------ main.js ------
-import { square, diag } from 'lib';
-console.log(square(11)); // 121
-console.log(diag(4, 3)); // 5
+const product = (a, b) => {
+    return a * b;
+};
+
+export {sum, product};
+
+//------ app.js ------
+import {sum, product} from './modules/math-functions';
+
+resultSum.textContent = `The sum of ${a} and ${b} is ${sum(a, b)}.`;
+resultProduct.textContent = `The product of ${a} and ${b} is ${product(a, b)}.`;
 
 You can also import the complete module:
 
-//------ main.js ------
-import * as lib from 'lib';
-console.log(lib.square(11)); // 121
-console.log(lib.diag(4, 3)); // 5
+//------ app.js ------
+import * as math from './modules/math-functions';
+resultSum.textContent = `The sum of ${a} and ${b} is ${math.sum(a, b)}.`;
+resultProduct.textContent = `The product of ${a} and ${b} is ${math.product(a, b)}.`;
 
-Browsers are not yet supporting modules feature in ES6. So, we use module loaders like SystemJs, requireJs etc.. A module loader is a polyfill to support modules in un supported browsers.
+Browsers are not yet supporting modules feature in ES6.
 
 Webpack is module bundler, which convert ES6 modules into ES5 modules.
 
@@ -705,28 +693,12 @@ Webpack is module bundler, which convert ES6 modules into ES5 modules.
 > npm install webpack -g
 > npm install webpack-cli -g
 
-Code Repo: https://github.com/nagarjun-immadi/getting-started-with-webpack-and-es6-modules-the-demo
+Code Repo: https://github.com/angular-online/getting-started-with-webpack-and-es6-modules-the-demo
 
 > Clone the Repo
 
 > npm install
 
-> webpack --watch
-
-Reference article: https://medium.com/@svinkle/getting-started-with-webpack-and-es6-modules-c465d053d988
-
-NPM commands:
--------------
-// Create new js project
-> npm init
-
-// Install webpack locally in your project and update package.json file
-> npm install webpack --save
-
-// Build project
-> webpack
-
-// Build and watch project
 > webpack --watch
 
 webpack commands:
@@ -737,25 +709,28 @@ webpack --watch  - build and keep on checking for changes.
 
 Default Exports:
 ----------------
-An ES6 module can export a main value. Default exports are easy to import.
+An ES6 module can export a main value as default value. Default exports are easy to import.
+We have to export only one default value from one module.
 
 Default export of function:
-//------ myFunc.js ------
-export default function () {} 
+//------ default-demo.js ------
+export default function () {
+    console.log('default function called');
+}
 
-//------ main1.js ------
-import myFunc from 'myFunc';
-myFunc();
+//------ app.js ------
+import MyFunc from './modules/default-demo';
+MyFunc();
 
 Default export of class:
-//------ MyClass.js ------
+//------ default-demo.js ------
 export default class {} 
 
-//------ main2.js ------
+//------ app.js ------
 import MyClass from 'MyClass';
 const inst = new MyClass();
 
-We can default export direct values also.
+We can do default export of direct values also.
 
 export default 'abc';
 export default foo();
@@ -766,31 +741,25 @@ export default { no: false, yes: true };
 Imports and exports must be at the top level / first level(i.e not wrapped in any block {}).
 // No conditional Imports
 if (Math.random()) {
-    import 'foo'; // SyntaxError
+    import {sum, product} from './modules/math-functions'; // SyntaxError
 }
 
-// You can’t even nest `import` and `export`
-// inside a simple block:
+// You can’t even nest `import` and `export` inside a simple block:
 {
-    import 'foo'; // SyntaxError
+    import {sum, product} from './modules/math-functions'; // SyntaxError
 }
 
 Imports are hoisted: Therefore, it doesn’t matter where you mention them in a module and the following code works without any problems:
 
-foo();
-import { foo } from 'my_module';
-
-Import all:
------------ 
-import * as math from 'foo';
-math.bar();
+MyFunc();
+import MyFunc from './modules/default-demo';
 
 Symbols:
 ========
 Symbol is a primitive data type.
 
 Object property keys may be either of string type, or of symbol type. Not numbers, not booleans, only strings or symbols.
-Ex: iterator symbol on arrays and maps etc...
+Ex: iterator symbol on arrays, maps etc...
 
 “Symbol” value represents a unique identifier.
 
@@ -811,103 +780,14 @@ let id2 = Symbol("id");
 
 id1 == id2 // false
 
-Symbols don’t auto-convert to a string:
-let id = Symbol("id");
-alert(id); // TypeError: Cannot convert a Symbol value to a string
+for...of loop
+=============
+We can use this for of loop to iterate through values of iterables like arrays, maps etc...
 
-let id = Symbol("id");
-alert(id.toString()); // Symbol(id), now it works
-
-If we want to use a symbol in an object literal, we need to use square brackets around it.
-let id = Symbol("id");
-
-let user = {
-  name: "John",
-  [id]: 123 // not just "id: 123"
-};
-
-Read symbol
-user[id] // 123
-
-Make an object symbol property readonly:
-----------------------------------------
-let id = Symbol("id");
-
-let user = {
-  name: "John",
-  [id]: 123 // not just "id: 123"
-};
-
-user[id] // 123
-
-id = null; // By making id reference as null, we can't access the id symbol in the user object.
-
-user[id] // undefined
-
-Symbols are skipped by for…in loop.
-let id = Symbol("id");
-let user = {
-  name: "John",
-  age: 30,
-  [id]: 123
-};
-
-for (let key in user) {
-    console.log(key);
+let fruits = ["Lemon","Apple","Orange","Peach"];
+for(let fruit of fruits) {
+	console.log(fruit);
 }
-
-Object.keys(user); // Object.keys also skips symbol keys
-
-Object.assign() copies symbols also.
-let id = Symbol("id");
-let user = {
-  [id]: 123
-};
-let clone = Object.assign({}, user);
-console.log( clone[id] ); // 123
-
-Global symbols:
----------------
-Some times we need to use same symbol throughout the application. So, we can ceate gloal symbols and use it.
-
-To achieve that, there exists a global symbol registry. We can create symbols in it and access them later, and it guarantees that repeated accesses by the same name return exactly the same symbol.
-
-Symbols inside the registry are called global symbols.
-
-Using Symbol.for(key), we can create and access global symbol with 'key' in registry.
-
-Symbol.for(key) checks the global registry, and if there’s a symbol described as key, then returns it, otherwise creates a new symbol with Symbol(key) and stores it in the registry by the given key.
-
-// read from the global registry
-let id = Symbol.for("id"); // if the symbol did not exist, it is created
-
-// read it again
-let idAgain = Symbol.for("id");
-
-// the same symbol
-console.log( id === idAgain ); // true
-
-Symbol.keyFor(sym): Takes symbol and return key for that symbol.
-------------------
-let sym = Symbol.for("name");
-let sym2 = Symbol.for("id");
-
-// get name from symbol
-console.log( Symbol.keyFor(sym) ); // name
-console.log( Symbol.keyFor(sym2) ); // id
-
-Symbol.keyFor works for only gloal symbols not for normal symbols. For normal symbols it will return undefined.
-
-System symbols:
----------------
-System symbols are used by javascript internally. Below are examples.
-- Symbol.iterator
-- Symbol.hasInstance
-- Symbol.isConcatSpreadable
-- Symbol.toPrimitive
-- etc ....
-
-// for of loop
 
 Object changes:
 ===============
@@ -967,8 +847,6 @@ find and findIndex:
 -------------------
 We use indexOf to search for an element in an array.
 
-for conditional based search we use for loop.
-
 We can use find() and findIndex() methods for conditional based search.
 
 var numbersArr = [1,2,2,4];
@@ -994,13 +872,6 @@ create array from array like objects.
 var arrayLike = document.querySelectorAll('div');
 
 var arr = Array.from(arrayLike);
-
-array.entries()
-Returns an array iterator with entries.
-var names = ["John", "Doe", "Jim"];
-
-var entries = names.entries(); // We can convert to map
-var firstEntry = entries.next().value;
 
 Sites to Refer:
 ===============
